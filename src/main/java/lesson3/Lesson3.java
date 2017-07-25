@@ -8,6 +8,9 @@ package lesson3;
 import java.io.IOException;
 import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * @author Simon Ritter (@speakjava)
@@ -68,8 +71,15 @@ public class Lesson3 {
         int[][] distances = new int[LIST_SIZE][LIST_SIZE];
 
         // YOUR CODE HERE
-
+        createIntStream(0, LIST_SIZE, parallel)
+                .forEach(i -> createIntStream(0, LIST_SIZE, parallel)
+                        .forEach(j -> distances[i][j] = Levenshtein.lev(wordList.get(i), wordList.get(j))));
         return distances;
+    }
+
+    static IntStream createIntStream(int startInclusive, int endExclusive, boolean parallel) {
+        IntStream stream = IntStream.range(startInclusive, endExclusive);
+        return parallel ? stream.parallel() : stream;
     }
 
     /**
@@ -81,8 +91,12 @@ public class Lesson3 {
      */
     static List<String> processWords(List<String> wordList, boolean parallel) {
         // YOUR CODE HERE
-
-        return null;
+        Stream<String> wordStream = parallel ? wordList.parallelStream() : wordList.stream();
+        return wordStream
+                .distinct()
+                .map(String::toLowerCase)
+                .sorted()
+                .collect(Collectors.toList());
     }
 
     /**
@@ -98,7 +112,7 @@ public class Lesson3 {
         measure("Sequential", () -> computeLevenshtein(wordList, false));
         measure("Parallel", () -> computeLevenshtein(wordList, true));
 
-//    measure("Sequential", () -> processWords(wordList, false));
-//    measure("Parallel", () -> processWords(wordList, true));
+        measure("Sequential", () -> processWords(wordList, false));
+        measure("Parallel", () -> processWords(wordList, true));
     }
 }
