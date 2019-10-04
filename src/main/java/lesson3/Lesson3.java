@@ -73,7 +73,7 @@ public class Lesson3 {
         // YOUR CODE HERE
         createIntStream(0, LIST_SIZE, parallel)
                 .forEach(i -> createIntStream(0, LIST_SIZE, parallel)
-                        .forEach(j -> distances[i][j] = Levenshtein.lev(wordList.get(i), wordList.get(j))));
+                .forEach(j -> distances[i][j] = Levenshtein.lev(wordList.get(i), wordList.get(j))));
         return distances;
     }
 
